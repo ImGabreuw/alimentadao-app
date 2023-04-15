@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity implements TimeAdapter.OnTim
         timeAdapter = new TimeAdapter(timeCache, this);
         recyclerViewTimes.setAdapter(timeAdapter);
 
-        Button buttonAddTime = findViewById(R.id.material_icon_button);
+        Button buttonAddTime = findViewById(R.id.btn_add_time);
         buttonAddTime.setOnClickListener(view -> showDialogToAddTime());
     }
 

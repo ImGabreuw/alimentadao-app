@@ -11,20 +11,13 @@
 
         <ImageView
             android:id="@+id/dog_image"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="70dp"
+            android:layout_marginStart="16dp"
             app:layout_constraintBottom_toTopOf="@+id/guideline8"
-            app:layout_constraintEnd_toStartOf="@+id/guideline6"
-            app:layout_constraintStart_toStartOf="@+id/guideline2"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/guideline3"
             app:srcCompat="@drawable/dog_image" />
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_begin="16dp" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline3"
@@ -35,7 +28,7 @@
 
         <TextView
             android:id="@+id/project_name"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="46dp"
             android:text="Alimentadão"
             android:textAlignment="center"
@@ -43,23 +36,9 @@
             android:textSize="34sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@+id/guideline8"
-            app:layout_constraintEnd_toStartOf="@+id/guideline9"
-            app:layout_constraintStart_toStartOf="@+id/guideline7"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/dog_image"
             app:layout_constraintTop_toTopOf="@+id/guideline3" />
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline6"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_begin="86dp" />
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline7"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_begin="102dp" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline8"
@@ -67,20 +46,6 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             app:layout_constraintGuide_begin="86dp" />
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline9"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_begin="395dp" />
-
-        <androidx.constraintlayout.widget.Barrier
-            android:id="@+id/barrier2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:barrierDirection="left"
-            app:constraint_referenced_ids="dog_image" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline10"
@@ -96,11 +61,12 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
             android:orientation="horizontal"
-            app:layout_constraintBottom_toTopOf="@+id/guideline13"
+            app:layout_constraintBottom_toTopOf="@+id/guideline2"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/material_icon_button">
+            app:layout_constraintTop_toBottomOf="@+id/btn_add_time">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerViewTimes"
@@ -110,45 +76,26 @@
 
         <Button
             android:id="@+id/button"
-            android:layout_width="320dp"
+            android:layout_width="0dp"
             android:layout_height="100dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginEnd="32dp"
             android:backgroundTint="#FFB82F"
             android:text="Alimentar agora"
             android:textColor="#000000"
             android:textSize="16sp"
             android:textStyle="bold"
             app:cornerRadius="10dp"
-            app:layout_constraintBottom_toTopOf="@+id/guideline11"
-            app:layout_constraintEnd_toStartOf="@+id/guideline9"
-            app:layout_constraintStart_toStartOf="@+id/guideline2"
-            app:layout_constraintTop_toTopOf="@+id/guideline12" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/guideline2" />
 
         <androidx.constraintlayout.widget.Barrier
             android:id="@+id/barrier3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:barrierDirection="top" />
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline11"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_begin="684dp" />
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline12"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_begin="584dp" />
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline13"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_begin="538dp" />
 
         <TextView
             android:id="@+id/textView2"
@@ -159,60 +106,40 @@
             android:textColor="#000000"
             android:textSize="24sp"
             android:textStyle="bold"
-            app:layout_constraintEnd_toStartOf="@+id/guideline9"
-            app:layout_constraintStart_toStartOf="@+id/guideline2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/guideline10" />
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/material_icon_button"
+            android:id="@+id/btn_add_time"
             style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="52dp"
+            android:layout_marginStart="32dp"
             android:layout_marginTop="16dp"
+            android:layout_marginEnd="32dp"
             android:text="Adicionar horário"
             android:textColor="#000000"
             app:backgroundTint="#9DB9FF"
             app:cornerRadius="15dp"
             app:icon="@android:drawable/ic_menu_add"
             app:iconTint="#000000"
-            app:layout_constraintEnd_toStartOf="@+id/guideline16"
-            app:layout_constraintStart_toStartOf="@+id/guideline15"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView2" />
-
-        <androidx.constraintlayout.widget.Barrier
-            android:id="@+id/barrier4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:barrierDirection="left"
-            app:constraint_referenced_ids="material_icon_button" />
-
-        <androidx.constraintlayout.widget.Barrier
-            android:id="@+id/barrier5"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:barrierDirection="left"
-            app:constraint_referenced_ids="material_icon_button" />
 
         <androidx.constraintlayout.widget.Barrier
             android:id="@+id/barrier6"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:barrierDirection="left"
-            app:constraint_referenced_ids="guideline12" />
+            app:barrierDirection="left" />
 
         <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline15"
+            android:id="@+id/guideline2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_begin="32dp" />
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline16"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_begin="378dp" />
+            android:orientation="horizontal"
+            app:layout_constraintGuide_begin="566dp" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
