@@ -40,7 +40,7 @@ public class TimeAdapter extends RecyclerView.Adapter<TimeAdapter.TimeViewHolder
         String time = timeCache.get(position);
 
         holder.textViewTime.setText(time);
-        holder.buttonRemove.setOnClickListener(view -> onTimeRemoveListener.onTimeRemoved(position));
+        holder.buttonRemove.setOnClickListener(view -> onTimeRemoveListener.onTimeRemoved(time));
     }
 
     @Override
@@ -60,7 +60,7 @@ public class TimeAdapter extends RecyclerView.Adapter<TimeAdapter.TimeViewHolder
     }
 
     public interface OnTimeRemoveListener {
-        void onTimeRemoved(int position);
+        void onTimeRemoved(String time);
     }
 }
 

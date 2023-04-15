@@ -1,7 +1,6 @@
 package br.com.alimentadao.app;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -38,14 +37,10 @@ public class MainActivity extends AppCompatActivity implements TimeAdapter.OnTim
     }
 
     @Override
-    public void onTimeRemoved(int position) {
-        try {
-            Log.i("TAG", "onTimeRemoved: "+ position + "/" + timeCache.toString());
-            timeCache.remove(position);
-            Log.i("TAG", "onTimeRemoved: "+ position + "/" + timeCache.toString());
-            timeAdapter.notifyItemRemoved(position);
-        } catch (IndexOutOfBoundsException ignored) {
-        }
+    public void onTimeRemoved(String time) {
+        int position = timeCache.indexOf(time);
+        timeCache.remove(time);
+        timeAdapter.notifyItemRemoved(position);
     }
 
     private void showDialogToAddTime() {
