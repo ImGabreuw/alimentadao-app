@@ -89,7 +89,7 @@
             android:orientation="horizontal"
             app:layout_constraintGuide_begin="112dp" />
 
-        <LinearLayout
+        <ScrollView
             android:id="@+id/linearLayout"
             android:layout_width="0dp"
             android:layout_height="0dp"
@@ -102,20 +102,11 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/material_icon_button">
 
-            <TextView
-                android:id="@+id/textViewTime"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="14:30"
-                android:textSize="18sp" />
-
-            <ImageButton
-                android:id="@+id/buttonRemove"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                tools:srcCompat="@android:drawable/ic_menu_close_clear_cancel" />
-        </LinearLayout>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerViewTimes"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </ScrollView>
 
         <Button
             android:id="@+id/button"
