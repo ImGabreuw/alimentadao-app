@@ -9,15 +9,20 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <ImageView
+        <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/dog_image"
-            android:layout_width="0dp"
-            android:layout_height="70dp"
-            android:layout_marginStart="16dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+
+            android:padding="5dp"
             app:layout_constraintBottom_toTopOf="@+id/guideline8"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/guideline3"
-            app:srcCompat="@drawable/dog_image" />
+            app:shapeAppearanceOverlay="@style/circleImageView"
+            app:srcCompat="@drawable/dog_image"
+            app:strokeColor="#000000"
+            app:strokeWidth="5dp" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline3"
@@ -30,6 +35,8 @@
             android:id="@+id/project_name"
             android:layout_width="0dp"
             android:layout_height="46dp"
+            android:layout_marginEnd="32dp"
+            android:includeFontPadding="false"
             android:text="Alimentadão"
             android:textAlignment="center"
             android:textColor="#000000"
@@ -118,11 +125,15 @@
             android:layout_marginStart="32dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="32dp"
+            android:paddingLeft="10dp"
             android:text="Adicionar horário"
+            android:textAlignment="textStart"
             android:textColor="#000000"
+            android:textSize="16sp"
             app:backgroundTint="#9DB9FF"
             app:cornerRadius="15dp"
             app:icon="@android:drawable/ic_menu_add"
+            app:iconPadding="10dp"
             app:iconTint="#000000"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
