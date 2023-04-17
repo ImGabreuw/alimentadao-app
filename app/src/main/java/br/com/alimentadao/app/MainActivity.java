@@ -25,14 +25,14 @@ public class MainActivity extends AppCompatActivity implements TimeAdapter.OnTim
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
 
-        RecyclerView recyclerViewTimes = findViewById(R.id.recyclerViewTimes);
+        RecyclerView recyclerViewTimes = findViewById(R.id.timeList);
         recyclerViewTimes.setLayoutManager(new LinearLayoutManager(this));
 
         timeCache = new ArrayList<>();
         timeAdapter = new TimeAdapter(timeCache, this);
         recyclerViewTimes.setAdapter(timeAdapter);
 
-        Button buttonAddTime = findViewById(R.id.btn_add_time);
+        Button buttonAddTime = findViewById(R.id.btnAddTime);
         buttonAddTime.setOnClickListener(view -> showDialogToAddTime());
     }
 
@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity implements TimeAdapter.OnTim
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         LayoutInflater inflater = getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.dialog_add_time, null);
-        EditText etTime = dialogView.findViewById(R.id.etTime);
+        EditText etTime = dialogView.findViewById(R.id.inputTime);
 
         builder.setView(dialogView);
         AlertDialog dialog = builder.create();

@@ -6,7 +6,7 @@
     android:layout_height="wrap_content">
 
     <TextView
-        android:id="@+id/textViewTime"
+        android:id="@+id/txtTime"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:padding="16dp"
@@ -16,7 +16,7 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <ImageButton
-        android:id="@+id/buttonRemove"
+        android:id="@+id/btnRemove"
         android:layout_width="30dp"
         android:layout_height="40dp"
         android:layout_marginEnd="16dp"
@@ -24,5 +24,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:src="@drawable/icons8_trash"
-        android:background="@android:color/transparent" />
+        android:background="@android:color/transparent"
+        android:contentDescription="@string/btn_remove_description" />
 </androidx.constraintlayout.widget.ConstraintLayout>

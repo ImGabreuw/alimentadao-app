@@ -6,9 +6,11 @@
     android:padding="16dp">
 
     <EditText
-        android:id="@+id/etTime"
+        android:id="@+id/inputTime"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Informe o horário" />
+        android:hint="@string/inputTime"
+        android:autofillHints=""
+        android:inputType="time" />
 
 </LinearLayout>

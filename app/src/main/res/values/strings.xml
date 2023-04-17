@@ -9,4 +9,10 @@
 
     <string name="hello_first_fragment">Hello first fragment</string>
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="inputTime">Informe o horário</string>
+    <string name="btn_remove_description">Botão de remover</string>
+    <string name="project_name">Alimentadão</string>
+    <string name="btn_fed_now_text">Alimentar agora</string>
+    <string name="txt_time">Horários</string>
+    <string name="btn_add_time_txt">Adicionar horário</string>
 </resources>

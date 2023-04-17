@@ -10,59 +10,59 @@
         android:layout_height="match_parent">
 
         <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/dog_image"
+            android:id="@+id/dogImage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
 
             android:padding="5dp"
-            app:layout_constraintBottom_toTopOf="@+id/guideline8"
+            app:layout_constraintBottom_toTopOf="@+id/projectInfoContainerEnd"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/guideline3"
+            app:layout_constraintTop_toTopOf="@+id/projectInfoContainerStart"
             app:shapeAppearanceOverlay="@style/circleImageView"
             app:srcCompat="@drawable/dog_image"
             app:strokeColor="#000000"
             app:strokeWidth="5dp" />
 
         <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline3"
+            android:id="@+id/projectInfoContainerStart"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             app:layout_constraintGuide_begin="16dp" />
 
         <TextView
-            android:id="@+id/project_name"
+            android:id="@+id/projectName"
             android:layout_width="0dp"
             android:layout_height="46dp"
             android:layout_marginEnd="32dp"
             android:includeFontPadding="false"
-            android:text="Alimentadão"
+            android:text="@string/project_name"
             android:textAlignment="center"
             android:textColor="#000000"
             android:textSize="34sp"
             android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@+id/guideline8"
+            app:layout_constraintBottom_toTopOf="@+id/projectInfoContainerEnd"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/dog_image"
-            app:layout_constraintTop_toTopOf="@+id/guideline3" />
+            app:layout_constraintStart_toEndOf="@+id/dogImage"
+            app:layout_constraintTop_toTopOf="@+id/projectInfoContainerStart" />
 
         <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline8"
+            android:id="@+id/projectInfoContainerEnd"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             app:layout_constraintGuide_begin="86dp" />
 
         <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline10"
+            android:id="@+id/time_list_container_start"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             app:layout_constraintGuide_begin="112dp" />
 
         <ScrollView
-            android:id="@+id/linearLayout"
+            android:id="@+id/timeListContainer"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginStart="16dp"
@@ -70,15 +70,15 @@
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="16dp"
             android:orientation="horizontal"
-            app:layout_constraintBottom_toTopOf="@+id/guideline2"
+            app:layout_constraintBottom_toTopOf="@+id/timeListContainerEnd"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btn_add_time">
+            app:layout_constraintTop_toBottomOf="@+id/btnAddTime">
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerViewTimes"
+                android:id="@+id/timeList"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="wrap_content" />
         </ScrollView>
 
         <Button
@@ -89,14 +89,14 @@
             android:layout_marginTop="32dp"
             android:layout_marginEnd="32dp"
             android:backgroundTint="#FFB82F"
-            android:text="Alimentar agora"
+            android:text="@string/btn_fed_now_text"
             android:textColor="#000000"
             android:textSize="16sp"
             android:textStyle="bold"
             app:cornerRadius="10dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/guideline2" />
+            app:layout_constraintTop_toTopOf="@+id/timeListContainerEnd" />
 
         <androidx.constraintlayout.widget.Barrier
             android:id="@+id/barrier3"
@@ -105,20 +105,20 @@
             app:barrierDirection="top" />
 
         <TextView
-            android:id="@+id/textView2"
+            android:id="@+id/timeListTitle"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_marginTop="16dp"
-            android:text="Horários"
+            android:text="@string/txt_time"
             android:textColor="#000000"
             android:textSize="24sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/guideline10" />
+            app:layout_constraintTop_toTopOf="@+id/time_list_container_start" />
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_add_time"
+            android:id="@+id/btnAddTime"
             style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
             android:layout_width="0dp"
             android:layout_height="52dp"
@@ -126,7 +126,7 @@
             android:layout_marginTop="16dp"
             android:layout_marginEnd="32dp"
             android:paddingLeft="10dp"
-            android:text="Adicionar horário"
+            android:text="@string/btn_add_time_txt"
             android:textAlignment="textStart"
             android:textColor="#000000"
             android:textSize="16sp"
@@ -137,16 +137,16 @@
             app:iconTint="#000000"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView2" />
+            app:layout_constraintTop_toBottomOf="@+id/timeListTitle" />
 
         <androidx.constraintlayout.widget.Barrier
-            android:id="@+id/barrier6"
+            android:id="@+id/addIcon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:barrierDirection="left" />
 
         <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline2"
+            android:id="@+id/timeListContainerEnd"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
