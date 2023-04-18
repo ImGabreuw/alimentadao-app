@@ -15,4 +15,5 @@
     <string name="btn_fed_now_text">Alimentar agora</string>
     <string name="txt_time">Horários</string>
     <string name="btn_add_time_txt">Adicionar horário</string>
+    <string name="btn_change_img_profile_description">Botão para mudar a foto de perfil</string>
 </resources>
