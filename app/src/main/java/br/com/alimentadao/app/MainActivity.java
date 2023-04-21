@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -16,7 +17,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity implements TimeAdapter.OnTim
         recyclerViewTimes.setAdapter(timeAdapter);
 
         Button buttonAddTime = findViewById(R.id.btnAddTime);
-        buttonAddTime.setOnClickListener(view -> showDialogToAddTime());
+        buttonAddTime.setOnClickListener(view -> showAddTimeDialog());
 
         ImageButton buttonChangeImgProfile = findViewById(R.id.btnChangeImgProfile);
         buttonChangeImgProfile.setOnClickListener(view -> openGallery());
@@ -67,19 +67,19 @@ public class MainActivity extends AppCompatActivity implements TimeAdapter.OnTim
         timeAdapter.notifyItemRemoved(position);
     }
 
-    private void showDialogToAddTime() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+    private void showAddTimeDialog() {
         LayoutInflater inflater = getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.dialog_add_time, null);
         EditText etTime = dialogView.findViewById(R.id.inputTime);
 
-        builder.setView(dialogView);
-        AlertDialog dialog = builder.create();
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setView(dialogView)
+                .create();
 
-        dialog.setButton(AlertDialog.BUTTON_POSITIVE, "Adicionar", (dialog1, which) -> {
+        dialog.setButton(AlertDialog.BUTTON_POSITIVE, "Adicionar", (addTimeDialog, which) -> {
             String time = etTime.getText().toString();
 
-            if (time.trim().length() == 0) {
+            if (TextUtils.isEmpty(time)) {
                 Toast.makeText(
                         getApplicationContext(),
                         "Insira um horário válido (HH:MM)",
@@ -90,16 +90,13 @@ public class MainActivity extends AppCompatActivity implements TimeAdapter.OnTim
 
             timeCache.add(time);
             timeAdapter.notifyItemInserted(timeCache.size() - 1);
-            dialog1.dismiss();
-
-            Toast.makeText(
-                    getApplicationContext(),
-                    "Horário adicionar com sucesso",
-                    Toast.LENGTH_SHORT
-            ).show();
+            addTimeDialog.dismiss();
         });
-
-        dialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancelar", (dialog12, which) -> dialog12.dismiss());
+        dialog.setButton(
+                AlertDialog.BUTTON_NEGATIVE,
+                "Cancelar",
+                (cancelDialog, which) -> cancelDialog.dismiss()
+        );
 
         dialog.show();
     }
@@ -113,30 +110,22 @@ public class MainActivity extends AppCompatActivity implements TimeAdapter.OnTim
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode != REQUEST_PICK_IMAGE || resultCode != RESULT_OK || data == null) {
+        if (requestCode == REQUEST_PICK_IMAGE && resultCode == RESULT_OK && data != null) {
+            Uri imageUri = data.getData();
+
+            ImageView meuImageButton = findViewById(R.id.dogImage);
+            meuImageButton.setImageURI(imageUri);
+
+            Toast.makeText(
+                    getApplicationContext(),
+                    "Foto atualizada com sucesso",
+                    Toast.LENGTH_SHORT
+            ).show();
             return;
         }
 
-        Uri imageUri = data.getData();
-
-        ImageView meuImageButton = findViewById(R.id.dogImage);
-        meuImageButton.setImageURI(imageUri);
-
-        Toast.makeText(
-                getApplicationContext(),
-                "Foto atualizada com sucesso",
-                Toast.LENGTH_SHORT
-        ).show();
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-        if (requestCode != REQUEST_ENABLE_BT) return;
-
-        if (grantResults.length == 0 || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-            setContentView(R.layout.deny_bluetooth_permission);
+        if (requestCode == REQUEST_ENABLE_BT && resultCode == PackageManager.PERMISSION_GRANTED) {
+            startActivity(new Intent(MainActivity.this, BTUsesActivity.class));
         }
     }
 }

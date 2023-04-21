@@ -54,6 +54,7 @@ public class BluetoothGateway {
 
         if (ContextCompat.checkSelfPermission(context, Manifest.permission.BLUETOOTH) != PackageManager.PERMISSION_GRANTED) {
             requestBluetoothPermission();
+            return;
         }
 
         if (!bluetoothAdapter.isEnabled()) {
@@ -73,9 +74,11 @@ public class BluetoothGateway {
 
     @SuppressLint("MissingPermission")
     private void pairWithAlimentadaoDevice() {
+        if (!bluetoothAdapter.isEnabled()) return;
+
         Set<BluetoothDevice> pairedDevices = bluetoothAdapter.getBondedDevices();
 
-        if (pairedDevices.size() == 0) {
+        if (pairedDevices.isEmpty()) {
             Toast.makeText(
                     context,
                     "Não há nenhum dispositivo para realizar o pareamento",
@@ -83,6 +86,7 @@ public class BluetoothGateway {
             ).show();
             return;
         }
+
         List<String> deviceNames = pairedDevices
                 .stream()
                 .map(BluetoothDevice::getName)
@@ -124,12 +128,18 @@ public class BluetoothGateway {
     }
 
     private void requestBluetoothPermission() {
-        ActivityCompat.requestPermissions(context, new String[]{Manifest.permission.BLUETOOTH}, REQUEST_ENABLE_BT);
+        ActivityCompat.requestPermissions(
+                context,
+                new String[]{Manifest.permission.BLUETOOTH},
+                REQUEST_ENABLE_BT
+        );
     }
 
     @SuppressLint("MissingPermission")
     private void requestToEnableBluetooth() {
-        Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-        context.startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+        context.startActivityForResult(
+                new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE),
+                REQUEST_ENABLE_BT
+        );
     }
 }
