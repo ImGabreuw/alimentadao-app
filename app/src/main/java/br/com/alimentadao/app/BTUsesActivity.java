@@ -1,6 +1,6 @@
 package br.com.alimentadao.app;
 
-import static br.com.alimentadao.app.bluetooth.BluetoothGateway.REQUEST_ENABLE_BT;
+import static br.com.alimentadao.app.bluetooth.BluetoothService.REQUEST_ENABLE_BT;
 
 import android.Manifest;
 import android.os.Bundle;

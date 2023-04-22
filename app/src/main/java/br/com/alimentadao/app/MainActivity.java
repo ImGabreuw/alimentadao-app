@@ -1,19 +1,17 @@
 package br.com.alimentadao.app;
 
-import static android.content.Intent.ACTION_PICK;
-import static br.com.alimentadao.app.bluetooth.BluetoothGateway.REQUEST_ENABLE_BT;
+import static br.com.alimentadao.app.WelcomeActivity.REQUEST_PICK_IMAGE;
+import static br.com.alimentadao.app.bluetooth.BluetoothService.REQUEST_ENABLE_BT;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -22,19 +20,20 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
-import br.com.alimentadao.app.bluetooth.BluetoothGateway;
+import br.com.alimentadao.app.bluetooth.BluetoothService;
 
 public class MainActivity extends AppCompatActivity implements TimeAdapter.OnTimeRemoveListener {
-
-    private static final int REQUEST_PICK_IMAGE = 1;
 
     private List<String> timeCache;
     private TimeAdapter timeAdapter;
 
-    private BluetoothGateway bluetoothGateway;
+    private BluetoothService bluetoothService = WelcomeActivity.getInstance().getBluetoothService();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,16 +47,18 @@ public class MainActivity extends AppCompatActivity implements TimeAdapter.OnTim
         timeAdapter = new TimeAdapter(timeCache, this);
         recyclerViewTimes.setAdapter(timeAdapter);
 
-        Button buttonAddTime = findViewById(R.id.btnAddTime);
+        Button buttonAddTime = findViewById(R.id.btn_add_time);
         buttonAddTime.setOnClickListener(view -> showAddTimeDialog());
-
-        ImageButton buttonChangeImgProfile = findViewById(R.id.btnChangeImgProfile);
-        buttonChangeImgProfile.setOnClickListener(view -> openGallery());
 
         // TODO: 19/04/2023 Fetch times from arduino
 
         Button buttonFedNow = findViewById(R.id.btn_fed_now);
-        buttonFedNow.setOnClickListener(view -> bluetoothGateway = new BluetoothGateway(this));
+        buttonFedNow.setOnClickListener(view -> {
+            Date now = new Date();
+            SimpleDateFormat formatter = new SimpleDateFormat("HH:mm", Locale.US);
+
+            bluetoothService.sendTime(formatter.format(now));
+        });
     }
 
     @Override
@@ -101,10 +102,6 @@ public class MainActivity extends AppCompatActivity implements TimeAdapter.OnTim
         dialog.show();
     }
 
-    private void openGallery() {
-        Intent intent = new Intent(ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        startActivityForResult(intent, REQUEST_PICK_IMAGE);
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

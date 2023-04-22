@@ -73,7 +73,7 @@
             app:layout_constraintBottom_toTopOf="@+id/timeListContainerEnd"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btnAddTime">
+            app:layout_constraintTop_toBottomOf="@+id/btn_add_time">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/timeList"
@@ -118,7 +118,7 @@
             app:layout_constraintTop_toTopOf="@+id/time_list_container_start" />
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnAddTime"
+            android:id="@+id/btn_add_time"
             style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
             android:layout_width="0dp"
             android:layout_height="52dp"
