@@ -1,7 +1,6 @@
 package br.com.alimentadao.app.device;
 
 import android.annotation.SuppressLint;
-import android.bluetooth.BluetoothDevice;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,8 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.alimentadao.app.R;
-import br.com.alimentadao.app.WelcomeActivity;
-import br.com.alimentadao.app.bluetooth.BluetoothService;
 
 public class DeviceAdapter extends RecyclerView.Adapter<DeviceViewHolder> {
 
@@ -40,12 +37,12 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull DeviceViewHolder holder, @SuppressLint("RecyclerView") int position) {
         CardView cardViewDeviceContainer = holder.itemView.findViewById(R.id.cv_device_container);
+        cardViewDeviceContainer.setCardBackgroundColor(selected == position ? 0x793C3F40 : 0x273C3F40);
 
         DeviceItem device = devices.get(position);
 
         holder.imageViewDeviceType.setImageResource(device.getType().getCode());
         holder.textViewDeviceName.setText(device.getName());
-
         holder.itemView.setOnClickListener(view -> {
             int previousSelected = selected;
             selected = position;
@@ -53,17 +50,6 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceViewHolder> {
             notifyItemChanged(previousSelected);
             notifyItemChanged(previousSelected);
         });
-
-        if (selected == position) {
-            cardViewDeviceContainer.setCardBackgroundColor(0x793C3F40);
-
-            BluetoothService bluetoothService = WelcomeActivity.getInstance().getBluetoothService();
-
-            BluetoothDevice bluetoothDevice = bluetoothService.findByName(device.getName());
-            bluetoothService.connectToDevice(bluetoothDevice);
-        } else {
-            cardViewDeviceContainer.setCardBackgroundColor(0x273C3F40);
-        }
     }
 
     @Override

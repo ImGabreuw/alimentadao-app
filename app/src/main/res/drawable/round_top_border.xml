@@ -2,12 +2,12 @@
     android:shape="rectangle">
 
     <!-- Set the solid color for the background -->
-    <solid android:color="#6474CF" />
+    <solid android:color="#DDDDDD" />
 
     <!-- Set the stroke width and color for the top border -->
     <stroke
         android:width="2dp"
-        android:color="#3F51B5" />
+        android:color="#D3D3D3" />
 
     <!-- Set the corner radii for the top left and right corners -->
     <corners

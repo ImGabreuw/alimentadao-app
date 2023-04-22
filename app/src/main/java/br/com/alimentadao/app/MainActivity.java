@@ -1,107 +1,69 @@
 package br.com.alimentadao.app;
 
-import static br.com.alimentadao.app.WelcomeActivity.REQUEST_PICK_IMAGE;
+import static android.Manifest.permission.BLUETOOTH;
+import static android.content.Intent.ACTION_PICK;
+import static android.content.pm.PackageManager.PERMISSION_GRANTED;
+import static android.widget.Toast.LENGTH_SHORT;
 import static br.com.alimentadao.app.bluetooth.BluetoothService.REQUEST_ENABLE_BT;
 
+import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.text.TextUtils;
-import android.view.LayoutInflater;
+import android.os.Handler;
+import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.ScrollView;
+import android.widget.Switch;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AlertDialog;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
+import com.google.android.material.button.MaterialButton;
 
 import br.com.alimentadao.app.bluetooth.BluetoothService;
+import br.com.alimentadao.app.device.DeviceAdapter;
+import br.com.alimentadao.app.device.DeviceItem;
 
-public class MainActivity extends AppCompatActivity implements TimeAdapter.OnTimeRemoveListener {
+public class MainActivity extends AppCompatActivity {
 
-    private List<String> timeCache;
-    private TimeAdapter timeAdapter;
+    public static final int REQUEST_PICK_IMAGE = 1;
 
-    private BluetoothService bluetoothService = WelcomeActivity.getInstance().getBluetoothService();
+    private static MainActivity instance;
+
+    private final Handler handler = new Handler();
+
+    private Runnable task;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        instance = this;
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
 
-        RecyclerView recyclerViewTimes = findViewById(R.id.timeList);
-        recyclerViewTimes.setLayoutManager(new LinearLayoutManager(this));
+        RecyclerView recyclerViewDevices = findViewById(R.id.devices);
+        recyclerViewDevices.setLayoutManager(new LinearLayoutManager(this));
 
-        timeCache = new ArrayList<>();
-        timeAdapter = new TimeAdapter(timeCache, this);
-        recyclerViewTimes.setAdapter(timeAdapter);
+        bluetoothService = new BluetoothService(this);
+        deviceAdapter = new DeviceAdapter();
+        recyclerViewDevices.setAdapter(deviceAdapter);
 
-        Button buttonAddTime = findViewById(R.id.btn_add_time);
-        buttonAddTime.setOnClickListener(view -> showAddTimeDialog());
-
-        // TODO: 19/04/2023 Fetch times from arduino
-
-        Button buttonFedNow = findViewById(R.id.btn_fed_now);
-        buttonFedNow.setOnClickListener(view -> {
-            Date now = new Date();
-            SimpleDateFormat formatter = new SimpleDateFormat("HH:mm", Locale.US);
-
-            bluetoothService.sendTime(formatter.format(now));
-        });
+        handleChangeProfileButton();
+        handleBluetoothSwitch();
+        handleConnectDeviceButton();
     }
+    private DeviceAdapter deviceAdapter;
 
-    @Override
-    public void onTimeRemoved(String time) {
-        int position = timeCache.indexOf(time);
-        timeCache.remove(time);
-        timeAdapter.notifyItemRemoved(position);
-    }
-
-    private void showAddTimeDialog() {
-        LayoutInflater inflater = getLayoutInflater();
-        View dialogView = inflater.inflate(R.layout.dialog_add_time, null);
-        EditText etTime = dialogView.findViewById(R.id.inputTime);
-
-        AlertDialog dialog = new AlertDialog.Builder(this)
-                .setView(dialogView)
-                .create();
-
-        dialog.setButton(AlertDialog.BUTTON_POSITIVE, "Adicionar", (addTimeDialog, which) -> {
-            String time = etTime.getText().toString();
-
-            if (TextUtils.isEmpty(time)) {
-                Toast.makeText(
-                        getApplicationContext(),
-                        "Insira um horário válido (HH:MM)",
-                        Toast.LENGTH_SHORT
-                ).show();
-                return;
-            }
-
-            timeCache.add(time);
-            timeAdapter.notifyItemInserted(timeCache.size() - 1);
-            addTimeDialog.dismiss();
-        });
-        dialog.setButton(
-                AlertDialog.BUTTON_NEGATIVE,
-                "Cancelar",
-                (cancelDialog, which) -> cancelDialog.dismiss()
-        );
-
-        dialog.show();
-    }
-
+    private BluetoothService bluetoothService;
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -110,19 +72,139 @@ public class MainActivity extends AppCompatActivity implements TimeAdapter.OnTim
         if (requestCode == REQUEST_PICK_IMAGE && resultCode == RESULT_OK && data != null) {
             Uri imageUri = data.getData();
 
-            ImageView meuImageButton = findViewById(R.id.dogImage);
+            ImageView meuImageButton = findViewById(R.id.WelcomedogImage);
             meuImageButton.setImageURI(imageUri);
 
             Toast.makeText(
                     getApplicationContext(),
                     "Foto atualizada com sucesso",
-                    Toast.LENGTH_SHORT
+                    LENGTH_SHORT
             ).show();
             return;
         }
 
-        if (requestCode == REQUEST_ENABLE_BT && resultCode == PackageManager.PERMISSION_GRANTED) {
-            startActivity(new Intent(MainActivity.this, BTUsesActivity.class));
+        if (requestCode == REQUEST_ENABLE_BT) {
+            Switch switchBluetooth = findViewById(R.id.switch_bluetooth);
+            switchBluetooth.setChecked(bluetoothService.getBluetoothAdapter().isEnabled());
+
+            if (resultCode == RESULT_OK) return;
+
+            bluetoothService.requestBluetoothPermission();
         }
+    }
+
+    @Override
+    protected void onResume() {
+        int delay = 3_000;
+
+        handler.postDelayed(task = () -> {
+            handler.postDelayed(task, delay);
+
+            try {
+                if (ContextCompat.checkSelfPermission(this, BLUETOOTH) != PERMISSION_GRANTED
+                        || !bluetoothService.getBluetoothAdapter().isEnabled()) {
+                    return;
+                }
+
+                bluetoothService
+                        .findPairedDevices()
+                        .stream()
+                        .map(DeviceItem::of)
+                        .forEach(deviceAdapter::addDevice);
+                deviceAdapter.notifyDataSetChanged();
+                showLoadingProgressBar(deviceAdapter.getItemCount() == 0);
+            } catch (Exception e) {
+                Log.e("AndroidTask", "onCreate: ", e);
+            }
+        }, delay);
+
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        handler.removeCallbacks(task);
+        super.onPause();
+    }
+
+    private void handleChangeProfileButton() {
+        ImageButton buttonChangeImgProfile = findViewById(R.id.btnWelcomeChangeProfile);
+        buttonChangeImgProfile.setOnClickListener(view -> openGallery());
+    }
+
+    private void handleBluetoothSwitch() {
+        Switch switchBluetooth = findViewById(R.id.switch_bluetooth);
+
+        switchBluetooth.setChecked(bluetoothService.getBluetoothAdapter().isEnabled());
+        switchBluetooth.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                bluetoothService.requestToEnableBluetooth();
+                return;
+            }
+
+            bluetoothService.disableBluetooth();
+        });
+    }
+
+    private void handleConnectDeviceButton() {
+        MaterialButton button = findViewById(R.id.btn_connect_device);
+
+        button.setOnClickListener(view -> {
+            DeviceItem selectedDevice = deviceAdapter.getSelectedDevice();
+
+            if (selectedDevice == null) {
+                Toast.makeText(
+                        this,
+                        "Nenhum dispositivo selecionado",
+                        LENGTH_SHORT
+                ).show();
+                return;
+            }
+
+            BluetoothDevice bluetoothDevice = bluetoothService.findByName(selectedDevice.getName());
+
+            if (bluetoothDevice == null) {
+                Toast.makeText(
+                        this,
+                        String.format(
+                                "O dispositivo '%s' não está mais disponível",
+                                selectedDevice.getName()
+                        ),
+                        LENGTH_SHORT
+                ).show();
+                return;
+            }
+
+            bluetoothService.connectToDevice(bluetoothDevice);
+        });
+    }
+
+    public void showLoadingProgressBar(boolean show) {
+        ProgressBar progressBar = findViewById(R.id.pb_loading);
+        ScrollView scrollView = findViewById(R.id.devicesContainer);
+
+        if (show) {
+            scrollView.setVisibility(View.INVISIBLE);
+            progressBar.setVisibility(View.VISIBLE);
+            return;
+        }
+
+        scrollView.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.INVISIBLE);
+    }
+
+    private void openGallery() {
+        startActivityForResult(
+                new Intent(ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI),
+                REQUEST_PICK_IMAGE
+        );
+    }
+
+    public static MainActivity getInstance() {
+        return instance;
+    }
+
+    public BluetoothService getBluetoothService() {
+        return bluetoothService;
     }
 }

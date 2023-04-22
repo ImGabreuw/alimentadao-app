@@ -17,9 +17,8 @@
         android:theme="@style/Theme.Alimentadao"
         tools:targetApi="31">
         <activity
-            android:name=".WelcomeActivity"
+            android:name=".MainActivity"
             android:exported="true"
-            android:label="@string/app_name"
             android:theme="@style/Theme.Alimentadao.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -28,7 +27,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MainActivity"
+            android:name=".HomeActivity"
             android:theme="@style/Theme.Alimentadao.NoActionBar" />
     </application>
 

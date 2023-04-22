@@ -41,6 +41,10 @@ public class BluetoothService {
     public BluetoothService(AppCompatActivity context) {
         this.context = context;
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.BLUETOOTH) != PackageManager.PERMISSION_GRANTED) {
+            requestBluetoothPermission();
+        }
     }
 
     @SuppressLint("MissingPermission")
@@ -137,5 +141,9 @@ public class BluetoothService {
         }
 
         return null;
+    }
+
+    public BluetoothAdapter getBluetoothAdapter() {
+        return bluetoothAdapter;
     }
 }
