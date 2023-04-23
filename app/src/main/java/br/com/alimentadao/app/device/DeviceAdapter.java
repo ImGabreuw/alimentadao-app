@@ -41,14 +41,14 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceViewHolder> {
 
         DeviceItem device = devices.get(position);
 
-        holder.imageViewDeviceType.setImageResource(device.getType().getCode());
+        holder.imageViewDeviceType.setImageResource(device.getType().getIcon());
         holder.textViewDeviceName.setText(device.getName());
         holder.itemView.setOnClickListener(view -> {
             int previousSelected = selected;
             selected = position;
 
             notifyItemChanged(previousSelected);
-            notifyItemChanged(previousSelected);
+            notifyItemChanged(selected);
         });
     }
 
@@ -57,10 +57,12 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceViewHolder> {
         return devices.size();
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     public void addDevice(DeviceItem device) {
         if (devices.contains(device)) return;
 
         devices.add(device);
+        notifyDataSetChanged();
     }
 
     public DeviceItem getSelectedDevice() {

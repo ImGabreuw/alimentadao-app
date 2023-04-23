@@ -34,7 +34,6 @@ public class BluetoothService {
     private final AppCompatActivity context;
     private final BluetoothAdapter bluetoothAdapter;
 
-    private List<BluetoothDevice> cachePairedDevices = new ArrayList<>();
     private InputStream response;
     private OutputStream request;
 
@@ -49,17 +48,20 @@ public class BluetoothService {
 
     @SuppressLint("MissingPermission")
     public List<BluetoothDevice> findPairedDevices() {
-        cachePairedDevices = new ArrayList<>(bluetoothAdapter.getBondedDevices());
-        return cachePairedDevices;
+        List<BluetoothDevice> devices = new ArrayList<>(bluetoothAdapter.getBondedDevices());
+        Log.i("BluetoothService", "findPairedDevices: " + devices);
+        return devices;
     }
 
     @SuppressLint("MissingPermission")
     public BluetoothDevice findByName(String name) {
-        return cachePairedDevices
+        BluetoothDevice bluetoothDevice = findPairedDevices()
                 .stream()
                 .filter(device -> device.getName().equalsIgnoreCase(name))
                 .findFirst()
                 .orElse(null);
+        Log.i("BluetoothService", "findByName: " + bluetoothDevice);
+        return bluetoothDevice;
     }
 
     @SuppressLint("MissingPermission")
@@ -73,12 +75,12 @@ public class BluetoothService {
 
             Log.i("bluetooth connection", "Conexão estabelecida com sucesso");
         } catch (IOException e) {
-            Log.e("bluetooth connection", e.getMessage());
             Toast.makeText(
                     context,
                     "Não foi possível estabeler uma conexão com o dispositivo '" + device.getName() + "'.",
                     LENGTH_SHORT
             ).show();
+            Log.e("bluetooth connection", e.getMessage());
         }
     }
 
@@ -88,6 +90,7 @@ public class BluetoothService {
                 new String[]{Manifest.permission.BLUETOOTH},
                 REQUEST_ENABLE_BT
         );
+        Log.i("BluetoothService", "requestBluetoothPermission: ");
     }
 
     public void requestToEnableBluetooth() {
@@ -102,6 +105,7 @@ public class BluetoothService {
                 new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE),
                 REQUEST_ENABLE_BT
         );
+        Log.i("BluetoothService", "requestToEnableBluetooth: ");
     }
 
     public void disableBluetooth() {
@@ -110,9 +114,16 @@ public class BluetoothService {
             return;
         }
 
-        if (!bluetoothAdapter.isEnabled()) return;
+        if (!isEnabled()) return;
 
         bluetoothAdapter.disable();
+        Log.i("BluetoothService", "disableBluetooth: ");
+    }
+
+    public boolean isEnabled() {
+        boolean enabled = bluetoothAdapter.isEnabled();
+        Log.i("BluetoothService", "isEnabled: " + enabled);
+        return enabled;
     }
 
     public void sendTime(String time) {

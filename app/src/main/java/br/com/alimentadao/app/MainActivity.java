@@ -57,10 +57,33 @@ public class MainActivity extends AppCompatActivity {
         deviceAdapter = new DeviceAdapter();
         recyclerViewDevices.setAdapter(deviceAdapter);
 
+        int delay = 3_000;
+        handler.postDelayed(task = () -> {
+            try {
+                if (ContextCompat.checkSelfPermission(this, BLUETOOTH) != PERMISSION_GRANTED
+                        || !bluetoothService.isEnabled()) {
+                    return;
+                }
+
+                bluetoothService
+                        .findPairedDevices()
+                        .stream()
+                        .map(DeviceItem::of)
+                        .forEach(deviceAdapter::addDevice);
+
+                showLoadingProgressBar(deviceAdapter.getItemCount() == 0);
+            } catch (Exception e) {
+                Log.e("AndroidTask", "onCreate: ", e);
+            }
+
+            handler.postDelayed(task, delay);
+        }, delay);
+
         handleChangeProfileButton();
         handleBluetoothSwitch();
         handleConnectDeviceButton();
     }
+
     private DeviceAdapter deviceAdapter;
 
     private BluetoothService bluetoothService;
@@ -95,36 +118,14 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onResume() {
-        int delay = 3_000;
-
-        handler.postDelayed(task = () -> {
-            handler.postDelayed(task, delay);
-
-            try {
-                if (ContextCompat.checkSelfPermission(this, BLUETOOTH) != PERMISSION_GRANTED
-                        || !bluetoothService.getBluetoothAdapter().isEnabled()) {
-                    return;
-                }
-
-                bluetoothService
-                        .findPairedDevices()
-                        .stream()
-                        .map(DeviceItem::of)
-                        .forEach(deviceAdapter::addDevice);
-                deviceAdapter.notifyDataSetChanged();
-                showLoadingProgressBar(deviceAdapter.getItemCount() == 0);
-            } catch (Exception e) {
-                Log.e("AndroidTask", "onCreate: ", e);
-            }
-        }, delay);
-
         super.onResume();
+        handler.post(task);
     }
 
     @Override
     protected void onPause() {
-        handler.removeCallbacks(task);
         super.onPause();
+        handler.removeCallbacks(task);
     }
 
     private void handleChangeProfileButton() {
@@ -135,14 +136,15 @@ public class MainActivity extends AppCompatActivity {
     private void handleBluetoothSwitch() {
         Switch switchBluetooth = findViewById(R.id.switch_bluetooth);
 
-        switchBluetooth.setChecked(bluetoothService.getBluetoothAdapter().isEnabled());
+        switchBluetooth.setChecked(bluetoothService.isEnabled());
         switchBluetooth.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
                 bluetoothService.requestToEnableBluetooth();
-                return;
+            } else {
+                bluetoothService.disableBluetooth();
             }
 
-            bluetoothService.disableBluetooth();
+            showLoadingProgressBar(!isChecked);
         });
     }
 
