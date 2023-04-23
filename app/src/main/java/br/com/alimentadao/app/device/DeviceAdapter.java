@@ -34,6 +34,7 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceViewHolder> {
         return new DeviceViewHolder(view);
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     @Override
     public void onBindViewHolder(@NonNull DeviceViewHolder holder, @SuppressLint("RecyclerView") int position) {
         CardView cardViewDeviceContainer = holder.itemView.findViewById(R.id.cv_device_container);
@@ -44,11 +45,10 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceViewHolder> {
         holder.imageViewDeviceType.setImageResource(device.getType().getIcon());
         holder.textViewDeviceName.setText(device.getName());
         holder.itemView.setOnClickListener(view -> {
-            int previousSelected = selected;
-            selected = position;
+            if (selected == position) return;
 
-            notifyItemChanged(previousSelected);
-            notifyItemChanged(selected);
+            selected = position;
+            notifyDataSetChanged();
         });
     }
 

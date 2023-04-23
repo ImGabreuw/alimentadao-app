@@ -69,11 +69,12 @@ public class BluetoothService {
         try {
             BluetoothSocket socket = device.createRfcommSocketToServiceRecord(ALIMENTADAO_UUID);
             socket.connect();
+            Log.i("bluetooth connection", "Conexão estabelecida com sucesso");
 
             response = socket.getInputStream();
             request = socket.getOutputStream();
 
-            Log.i("bluetooth connection", "Conexão estabelecida com sucesso");
+            // context.startActivity(new Intent(context, HomeActivity.class));
         } catch (IOException e) {
             Toast.makeText(
                     context,

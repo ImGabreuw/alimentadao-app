@@ -41,6 +41,8 @@ public class MainActivity extends AppCompatActivity {
 
     private final Handler handler = new Handler();
 
+    private DeviceAdapter deviceAdapter;
+    private BluetoothService bluetoothService;
     private Runnable task;
 
     @Override
@@ -83,10 +85,6 @@ public class MainActivity extends AppCompatActivity {
         handleBluetoothSwitch();
         handleConnectDeviceButton();
     }
-
-    private DeviceAdapter deviceAdapter;
-
-    private BluetoothService bluetoothService;
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -177,7 +175,8 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
 
-            bluetoothService.connectToDevice(bluetoothDevice);
+//            bluetoothService.connectToDevice(bluetoothDevice);
+            this.startActivity(new Intent(this, HomeActivity.class));
         });
     }
 
