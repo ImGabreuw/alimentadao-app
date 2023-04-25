@@ -1,165 +1,189 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#FFFFFF">
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/WelcomedogImage"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+
+        android:layout_marginTop="16dp"
+        android:padding="5dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:shapeAppearanceOverlay="@style/circleImageView"
+        app:srcCompat="@drawable/dog_image"
+        app:strokeColor="#FFC107"
+        app:strokeWidth="5dp" />
+
+    <TextView
+        android:id="@+id/projectName2"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:fontFamily="@font/opensans_bold_font"
+        android:includeFontPadding="false"
+        android:text="@string/project_name"
+        android:textAlignment="center"
+        android:textColor="#000000"
+        android:textSize="34sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/guideline2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/WelcomedogImage" />
+
+    <ImageButton
+        android:id="@+id/btnWelcomeChangeProfile"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:contentDescription="@string/btn_change_img_profile_description"
+        app:layout_constraintBottom_toBottomOf="@+id/WelcomedogImage"
+        app:layout_constraintEnd_toEndOf="@+id/WelcomedogImage"
+        app:srcCompat="@drawable/cam_icon" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/linearLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/dogImage"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
-            android:scaleType="centerCrop"
-            android:layout_marginStart="32dp"
-
-            android:padding="5dp"
-            app:layout_constraintBottom_toTopOf="@+id/projectInfoContainerEnd"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/projectInfoContainerStart"
-            app:shapeAppearanceOverlay="@style/circleImageView"
-            app:srcCompat="@drawable/dog_image"
-            app:strokeColor="#FFC107"
-            app:strokeWidth="5dp" />
+        android:layout_height="0dp"
+        android:layout_marginTop="32dp"
+        android:background="@drawable/round_top_border"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/projectName2">
 
         <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/projectInfoContainerStart"
+            android:id="@+id/guideline5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintGuide_begin="16dp" />
-
-        <TextView
-            android:id="@+id/projectName"
-            android:layout_width="0dp"
-            android:layout_height="46dp"
-            android:layout_marginEnd="32dp"
-            android:includeFontPadding="false"
-            android:text="@string/project_name"
-            android:textAlignment="center"
-            android:textColor="#000000"
-            android:textSize="34sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@+id/projectInfoContainerEnd"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/dogImage"
-            app:layout_constraintTop_toTopOf="@+id/projectInfoContainerStart" />
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/projectInfoContainerEnd"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_begin="86dp" />
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/time_list_container_start"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_begin="112dp" />
+            app:layout_constraintGuide_percent="0.85" />
 
         <ScrollView
-            android:id="@+id/timeListContainer"
+            android:id="@+id/devicesContainer"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="16dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
             android:orientation="horizontal"
-            app:layout_constraintBottom_toTopOf="@+id/timeListContainerEnd"
+            android:visibility="visible"
+            app:layout_constraintBottom_toTopOf="@+id/guideline5"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btnAddTime">
+            app:layout_constraintTop_toTopOf="@+id/guideline7">
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/timeList"
+                android:id="@+id/devices"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:visibility="visible" />
         </ScrollView>
 
-        <Button
-            android:id="@+id/btn_fed_now"
-            android:layout_width="0dp"
-            android:layout_height="100dp"
-            android:layout_marginStart="32dp"
-            android:layout_marginTop="32dp"
-            android:layout_marginEnd="32dp"
-            android:backgroundTint="#FFB82F"
-            android:text="@string/btn_fed_now_text"
-            android:textColor="#000000"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            app:cornerRadius="10dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/timeListContainerEnd" />
-
-        <androidx.constraintlayout.widget.Barrier
-            android:id="@+id/barrier3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:barrierDirection="top" />
-
-        <TextView
-            android:id="@+id/timeListTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_marginTop="16dp"
-            android:text="@string/txt_time"
-            android:textColor="#000000"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/time_list_container_start" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnAddTime"
-            style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
-            android:layout_width="0dp"
-            android:layout_height="52dp"
-            android:layout_marginStart="32dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="32dp"
-            android:paddingLeft="10dp"
-            android:text="@string/btn_add_time_txt"
-            android:textAlignment="textStart"
-            android:textColor="#000000"
-            android:textSize="16sp"
-            app:backgroundTint="#DAF44336"
-            app:cornerRadius="10dp"
-            app:icon="@android:drawable/ic_menu_add"
-            app:iconPadding="10dp"
-            app:iconTint="#000000"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/timeListTitle" />
-
-        <androidx.constraintlayout.widget.Barrier
-            android:id="@+id/addIcon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:barrierDirection="left" />
-
         <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/timeListContainerEnd"
+            android:id="@+id/guideline7"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintGuide_begin="566dp" />
+            app:layout_constraintGuide_percent="0.15" />
 
-        <ImageButton
-            android:id="@+id/btnChangeImgProfile"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            app:layout_constraintBottom_toBottomOf="@+id/dogImage"
-            app:layout_constraintEnd_toEndOf="@+id/dogImage"
-            app:srcCompat="@drawable/cam_icon"
-            android:contentDescription="@string/btn_change_img_profile_description" />
+        <androidx.cardview.widget.CardView
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="100dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="100dp"
+            android:layout_marginBottom="24dp"
+            app:cardBackgroundColor="#FFC107"
+            app:cardCornerRadius="15dp"
+            app:layout_constraintBottom_toTopOf="@+id/guideline7"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <Switch
+                    android:id="@+id/switch_bluetooth"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:fontFamily="@font/roboto_bold_font"
+                    android:text="Bluetooth"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.cardview.widget.CardView>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline8"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_begin="20dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_connect_device"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            android:fontFamily="@font/roboto_bold_font"
+            android:paddingLeft="10dp"
+            android:text="Conectar dispositivo"
+            android:textColor="#000000"
+            app:backgroundTint="#FDBF07"
+            app:cornerRadius="10dp"
+            app:icon="@drawable/sinal_de_bluetooth"
+            app:iconSize="20dp"
+            app:iconTint="#000000"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/guideline5" />
+
+        <ProgressBar
+            android:id="@+id/pb_loading"
+            style="indeterminateDrawable"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:visibility="visible"
+            app:layout_constraintBottom_toTopOf="@+id/btn_connect_device"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/guideline7" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_begin="20dp" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="top" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.18" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

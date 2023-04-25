@@ -57,6 +57,8 @@ public class TimeAdapter extends RecyclerView.Adapter<TimeAdapter.TimeViewHolder
             textViewTime = itemView.findViewById(R.id.txtTime);
             buttonRemove = itemView.findViewById(R.id.btnRemove);
         }
+
+
     }
 
     public interface OnTimeRemoveListener {

@@ -1,0 +1,17 @@
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+
+    <!-- Set the solid color for the background -->
+    <solid android:color="#DDDDDD" />
+
+    <!-- Set the stroke width and color for the top border -->
+    <stroke
+        android:width="2dp"
+        android:color="#D3D3D3" />
+
+    <!-- Set the corner radii for the top left and right corners -->
+    <corners
+        android:topLeftRadius="50dp"
+        android:topRightRadius="50dp" />
+
+</shape>
