@@ -1,13 +1,16 @@
 package br.com.alimentadao.app.device;
 
+import static android.graphics.Color.TRANSPARENT;
+
 import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.card.MaterialCardView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,8 +40,10 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceViewHolder> {
     @SuppressLint("NotifyDataSetChanged")
     @Override
     public void onBindViewHolder(@NonNull DeviceViewHolder holder, @SuppressLint("RecyclerView") int position) {
-        CardView cardViewDeviceContainer = holder.itemView.findViewById(R.id.cv_device_container);
-        cardViewDeviceContainer.setCardBackgroundColor(selected == position ? 0x793C3F40 : 0x273C3F40);
+        MaterialCardView cardViewDeviceContainer = holder.itemView.findViewById(R.id.cv_device_container);
+
+        cardViewDeviceContainer.setStrokeColor(selected == position ? 0xFF03D8C3 : TRANSPARENT);
+        cardViewDeviceContainer.setStrokeWidth(selected == position ? 3 : 0);
 
         DeviceItem device = devices.get(position);
 
