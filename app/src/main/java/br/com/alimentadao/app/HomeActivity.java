@@ -19,7 +19,7 @@ import br.com.alimentadao.app.time.TimeAdapter;
 
 public class HomeActivity extends AppCompatActivity {
 
-    private final BluetoothService bluetoothService = MainActivity.getInstance().getBluetoothService();
+    private final BluetoothService bluetoothService = ConnectionActivity.getInstance().getBluetoothService();
 
     private TimeAdapter timeAdapter;
 
