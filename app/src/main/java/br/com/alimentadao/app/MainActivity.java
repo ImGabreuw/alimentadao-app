@@ -1,6 +1,7 @@
 package br.com.alimentadao.app;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.transition.Slide;
 import android.transition.Transition;
@@ -47,7 +48,9 @@ public class MainActivity extends AppCompatActivity {
                     transition
             );
 
-            setContentView(R.layout.connection_activity);
+            Intent intent = new Intent(this, ConnectionActivity.class);
+            startActivity(intent);
+            overridePendingTransition(R.anim.slide_up, R.anim.nothing);
 
             return true;
         });

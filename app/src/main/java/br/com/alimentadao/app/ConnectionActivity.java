@@ -14,7 +14,7 @@ import android.os.Handler;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
-import android.widget.ImageButton;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
@@ -26,8 +26,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.google.android.material.button.MaterialButton;
 
 import br.com.alimentadao.app.bluetooth.BluetoothService;
 import br.com.alimentadao.app.device.DeviceAdapter;
@@ -81,7 +79,6 @@ public class ConnectionActivity extends AppCompatActivity {
             handler.postDelayed(task, delay);
         }, delay);
 
-        handleChangeProfileButton();
         handleBluetoothSwitch();
         handleConnectDeviceButton();
     }
@@ -93,7 +90,7 @@ public class ConnectionActivity extends AppCompatActivity {
         if (requestCode == REQUEST_PICK_IMAGE && resultCode == RESULT_OK && data != null) {
             Uri imageUri = data.getData();
 
-            ImageView meuImageButton = findViewById(R.id.WelcomedogImage);
+            ImageView meuImageButton = findViewById(R.id.welcome_dog_image);
             meuImageButton.setImageURI(imageUri);
 
             Toast.makeText(
@@ -126,11 +123,6 @@ public class ConnectionActivity extends AppCompatActivity {
         handler.removeCallbacks(task);
     }
 
-    private void handleChangeProfileButton() {
-        ImageButton buttonChangeImgProfile = findViewById(R.id.btnWelcomeChangeProfile);
-        buttonChangeImgProfile.setOnClickListener(view -> openGallery());
-    }
-
     private void handleBluetoothSwitch() {
         Switch switchBluetooth = findViewById(R.id.switch_bluetooth);
 
@@ -147,7 +139,7 @@ public class ConnectionActivity extends AppCompatActivity {
     }
 
     private void handleConnectDeviceButton() {
-        MaterialButton button = findViewById(R.id.btn_connect_device);
+        Button button = findViewById(R.id.btn_connect_device);
 
         button.setOnClickListener(view -> {
             DeviceItem selectedDevice = deviceAdapter.getSelectedDevice();
@@ -184,14 +176,8 @@ public class ConnectionActivity extends AppCompatActivity {
         ProgressBar progressBar = findViewById(R.id.pb_loading);
         ScrollView scrollView = findViewById(R.id.devicesContainer);
 
-        if (show) {
-            scrollView.setVisibility(View.INVISIBLE);
-            progressBar.setVisibility(View.VISIBLE);
-            return;
-        }
-
-        scrollView.setVisibility(View.VISIBLE);
-        progressBar.setVisibility(View.INVISIBLE);
+        scrollView.setVisibility(show ? View.INVISIBLE : View.VISIBLE);
+        progressBar.setVisibility(show ? View.VISIBLE : View.INVISIBLE);
     }
 
     private void openGallery() {
