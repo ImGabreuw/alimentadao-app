@@ -27,6 +27,9 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".ConnectionActivity"
+            android:theme="@style/Theme.Alimentadao.NoActionBar" />
+        <activity
             android:name=".HomeActivity"
             android:theme="@style/Theme.Alimentadao.NoActionBar" />
     </application>

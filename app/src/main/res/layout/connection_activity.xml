@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/connection_activity"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF">
+    android:background="#8988FF">
 
     <com.google.android.material.imageview.ShapeableImageView
-        android:id="@+id/WelcomedogImage"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
-
+        android:id="@+id/welcome_dog_image"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:layout_marginTop="16dp"
         android:padding="5dp"
         android:scaleType="centerCrop"
@@ -18,49 +19,24 @@
         app:layout_constraintTop_toTopOf="parent"
         app:shapeAppearanceOverlay="@style/circleImageView"
         app:srcCompat="@drawable/dog_image"
-        app:strokeColor="#FFC107"
+        app:strokeColor="#000000"
         app:strokeWidth="5dp" />
-
-    <TextView
-        android:id="@+id/projectName2"
-        android:layout_width="0dp"
-        android:layout_height="40dp"
-        android:fontFamily="@font/opensans_bold_font"
-        android:includeFontPadding="false"
-        android:text="@string/project_name"
-        android:textAlignment="center"
-        android:textColor="#000000"
-        android:textSize="34sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/guideline2"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/WelcomedogImage" />
-
-    <ImageButton
-        android:id="@+id/btnWelcomeChangeProfile"
-        android:layout_width="25dp"
-        android:layout_height="25dp"
-        android:contentDescription="@string/btn_change_img_profile_description"
-        app:layout_constraintBottom_toBottomOf="@+id/WelcomedogImage"
-        app:layout_constraintEnd_toEndOf="@+id/WelcomedogImage"
-        app:srcCompat="@drawable/cam_icon" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="16dp"
         android:background="@drawable/round_top_border"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/projectName2">
+        app:layout_constraintTop_toBottomOf="@+id/welcome_dog_image">
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.85" />
+            app:layout_constraintGuide_percent="0.78" />
 
         <ScrollView
             android:id="@+id/devicesContainer"
@@ -91,18 +67,16 @@
             app:layout_constraintGuide_percent="0.15" />
 
         <androidx.cardview.widget.CardView
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginStart="100dp"
-            android:layout_marginTop="24dp"
-            android:layout_marginEnd="100dp"
-            android:layout_marginBottom="24dp"
+            android:layout_width="85dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="24dp"
             app:cardBackgroundColor="#FFC107"
             app:cardCornerRadius="15dp"
             app:layout_constraintBottom_toTopOf="@+id/guideline7"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toEndOf="@+id/textView2"
+            app:layout_constraintTop_toTopOf="@+id/guideline8">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -111,17 +85,24 @@
                 <Switch
                     android:id="@+id/switch_bluetooth"
                     android:layout_width="0dp"
-                    android:layout_height="0dp"
+                    android:layout_height="4dp"
                     android:layout_marginStart="8dp"
                     android:layout_marginEnd="8dp"
-                    android:fontFamily="@font/roboto_bold_font"
-                    android:text="Bluetooth"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+                <ImageView
+                    android:id="@+id/imageView3"
+                    android:layout_width="21dp"
+                    android:layout_height="27dp"
+                    android:layout_marginStart="8dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/sinal_de_bluetooth" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.cardview.widget.CardView>
 
@@ -132,21 +113,20 @@
             android:orientation="horizontal"
             app:layout_constraintGuide_begin="20dp" />
 
-        <com.google.android.material.button.MaterialButton
+        <Button
             android:id="@+id/btn_connect_device"
-            android:layout_width="wrap_content"
-            android:layout_height="50dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp"
+            android:layout_width="0dp"
+            android:layout_height="80dp"
+            android:layout_marginStart="25dp"
+            android:layout_marginTop="50dp"
+            android:layout_marginEnd="25dp"
+            android:layout_marginBottom="50dp"
+            android:backgroundTint="#FFB82F"
             android:fontFamily="@font/roboto_bold_font"
-            android:paddingLeft="10dp"
-            android:text="Conectar dispositivo"
+            android:text="Conectar-se"
             android:textColor="#000000"
-            app:backgroundTint="#FDBF07"
+            android:textSize="24dp"
             app:cornerRadius="10dp"
-            app:icon="@drawable/sinal_de_bluetooth"
-            app:iconSize="20dp"
-            app:iconTint="#000000"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -171,6 +151,19 @@
             android:orientation="horizontal"
             app:layout_constraintGuide_begin="20dp" />
 
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:fontFamily="@font/roboto_bold_font"
+            android:text="Dispositivos"
+            android:textColor="#000000"
+            android:textSize="34sp"
+            app:layout_constraintBottom_toTopOf="@+id/guideline7"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/guideline8" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.Barrier
@@ -178,12 +171,5 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:barrierDirection="top" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.18" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

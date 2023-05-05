@@ -1,6 +1,7 @@
 package br.com.alimentadao.app.device;
 
-import static android.graphics.Color.TRANSPARENT;
+import static android.graphics.Color.BLACK;
+import static android.graphics.Color.WHITE;
 
 import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
@@ -42,8 +43,14 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceViewHolder> {
     public void onBindViewHolder(@NonNull DeviceViewHolder holder, @SuppressLint("RecyclerView") int position) {
         MaterialCardView cardViewDeviceContainer = holder.itemView.findViewById(R.id.cv_device_container);
 
-        cardViewDeviceContainer.setStrokeColor(selected == position ? 0xFF03D8C3 : TRANSPARENT);
-        cardViewDeviceContainer.setStrokeWidth(selected == position ? 3 : 0);
+        if (selected == position) {
+            cardViewDeviceContainer.setCardBackgroundColor(0xFF8988FF);
+            cardViewDeviceContainer.setStrokeWidth(0);
+        } else {
+            cardViewDeviceContainer.setCardBackgroundColor(WHITE);
+            cardViewDeviceContainer.setStrokeColor(BLACK);
+            cardViewDeviceContainer.setStrokeWidth(2);
+        }
 
         DeviceItem device = devices.get(position);
 
