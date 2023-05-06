@@ -45,11 +45,13 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceViewHolder> {
 
         if (selected == position) {
             cardViewDeviceContainer.setCardBackgroundColor(0xFF8988FF);
+            cardViewDeviceContainer.setElevation(8);
             cardViewDeviceContainer.setStrokeWidth(0);
         } else {
             cardViewDeviceContainer.setCardBackgroundColor(WHITE);
             cardViewDeviceContainer.setStrokeColor(BLACK);
             cardViewDeviceContainer.setStrokeWidth(2);
+            cardViewDeviceContainer.setCardElevation(0);
         }
 
         DeviceItem device = devices.get(position);

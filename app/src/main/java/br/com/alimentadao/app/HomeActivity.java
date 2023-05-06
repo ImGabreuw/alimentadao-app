@@ -34,12 +34,12 @@ public class HomeActivity extends AppCompatActivity {
         timeAdapter = new TimeAdapter();
         recyclerViewTimes.setAdapter(timeAdapter);
 
-        Button buttonAddTime = findViewById(R.id.btn_add_time);
+        Button buttonAddTime = findViewById(R.id.add_time_button);
         buttonAddTime.setOnClickListener(view -> showAddTimeDialog());
 
         // TODO: 19/04/2023 Fetch times from arduino
 
-        Button buttonFedNow = findViewById(R.id.btn_fed_now);
+        Button buttonFedNow = findViewById(R.id.fed_now_button);
         buttonFedNow.setOnClickListener(view -> {
             Date now = new Date();
             SimpleDateFormat formatter = new SimpleDateFormat("HH:mm", Locale.US);

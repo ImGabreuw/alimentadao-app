@@ -90,7 +90,7 @@ public class ConnectionActivity extends AppCompatActivity {
         if (requestCode == REQUEST_PICK_IMAGE && resultCode == RESULT_OK && data != null) {
             Uri imageUri = data.getData();
 
-            ImageView meuImageButton = findViewById(R.id.welcome_dog_image);
+            ImageView meuImageButton = findViewById(R.id.connection_dog_image);
             meuImageButton.setImageURI(imageUri);
 
             Toast.makeText(
