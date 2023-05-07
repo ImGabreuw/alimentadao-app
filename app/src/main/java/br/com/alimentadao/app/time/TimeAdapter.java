@@ -7,14 +7,17 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import br.com.alimentadao.app.R;
 
 public class TimeAdapter extends RecyclerView.Adapter<TimeViewHolder> {
 
-    private final List<String> timeCache = new ArrayList<>();
+    private final List<TimeItem> timeCache;
+
+    public TimeAdapter(List<TimeItem> times) {
+        this.timeCache = times;
+    }
 
     @NonNull
     @Override
@@ -32,9 +35,9 @@ public class TimeAdapter extends RecyclerView.Adapter<TimeViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull TimeViewHolder holder, int position) {
-        String time = timeCache.get(position);
+        TimeItem time = timeCache.get(position);
 
-        holder.textViewTime.setText(time);
+        holder.textViewTime.setText(time.getFormattedTime());
         holder.buttonRemove.setOnClickListener(view -> remove(time));
     }
 
@@ -43,14 +46,18 @@ public class TimeAdapter extends RecyclerView.Adapter<TimeViewHolder> {
         return timeCache.size();
     }
 
-    public void add(String time) {
+    public List<TimeItem> getTimeCache() {
+        return timeCache;
+    }
+
+    public void add(TimeItem time) {
         if (timeCache.contains(time)) return;
 
         timeCache.add(time);
         notifyItemInserted(timeCache.size() - 1);
     }
 
-    public void remove(String time) {
+    public void remove(TimeItem time) {
         if (time == null) return;
 
         int position = timeCache.indexOf(time);

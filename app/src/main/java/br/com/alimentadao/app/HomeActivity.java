@@ -15,12 +15,15 @@ import java.util.Date;
 import java.util.Locale;
 
 import br.com.alimentadao.app.bluetooth.BluetoothService;
+import br.com.alimentadao.app.database.TimeSQLiteRepository;
 import br.com.alimentadao.app.time.TimeAdapter;
+import br.com.alimentadao.app.time.TimeItem;
 
 public class HomeActivity extends AppCompatActivity {
 
     private final BluetoothService bluetoothService = ConnectionActivity.getInstance().getBluetoothService();
 
+    private TimeSQLiteRepository timeRepository;
     private TimeAdapter timeAdapter;
 
     @Override
@@ -31,15 +34,40 @@ public class HomeActivity extends AppCompatActivity {
         RecyclerView recyclerViewTimes = findViewById(R.id.timeList);
         recyclerViewTimes.setLayoutManager(new LinearLayoutManager(this));
 
-        timeAdapter = new TimeAdapter();
+        timeRepository = new TimeSQLiteRepository(this);
+
+        timeAdapter = new TimeAdapter(timeRepository.findAll());
         recyclerViewTimes.setAdapter(timeAdapter);
 
+        handleAddTimeButton();
+        handleFedNowButton();
+
+        // TODO: 19/04/2023 Update times in arduino
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        timeRepository.deleteAll();
+        timeAdapter.getTimeCache().forEach(time -> timeRepository.save(time));
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        timeRepository.close();
+    }
+
+    private void handleAddTimeButton() {
         Button buttonAddTime = findViewById(R.id.add_time_button);
+
         buttonAddTime.setOnClickListener(view -> showAddTimeDialog());
+    }
 
-        // TODO: 19/04/2023 Fetch times from arduino
-
+    private void handleFedNowButton() {
         Button buttonFedNow = findViewById(R.id.fed_now_button);
+
         buttonFedNow.setOnClickListener(view -> {
             Date now = new Date();
             SimpleDateFormat formatter = new SimpleDateFormat("HH:mm", Locale.US);
@@ -59,11 +87,7 @@ public class HomeActivity extends AppCompatActivity {
             int hour = materialTimePicker.getHour();
             int minute = materialTimePicker.getMinute();
 
-            timeAdapter.add(String.format(
-                    Locale.getDefault(),
-                    "%02d:%02d",
-                    hour, minute
-            ));
+            timeAdapter.add(TimeItem.create(hour, minute));
         });
 
         materialTimePicker.show(getSupportFragmentManager(), "TIME_PICKER");
