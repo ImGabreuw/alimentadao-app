@@ -25,6 +25,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import br.com.alimentadao.app.bluetooth.BluetoothService;
+import br.com.alimentadao.app.bluetooth.BluetoothThread;
 import br.com.alimentadao.app.device.DeviceAdapter;
 import br.com.alimentadao.app.device.DeviceItem;
 
@@ -102,6 +103,13 @@ public class ConnectionActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         handler.removeCallbacks(task);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (BluetoothThread.connectedThread != null){
+            BluetoothThread.connectedThread.cancel();
+        }
     }
 
     private void handleBluetoothSwitch() {
