@@ -10,10 +10,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.timepicker.MaterialTimePicker;
 import com.google.android.material.timepicker.TimeFormat;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
-
 import br.com.alimentadao.app.bluetooth.BluetoothService;
 import br.com.alimentadao.app.database.TimeSQLiteRepository;
 import br.com.alimentadao.app.time.TimeAdapter;
@@ -42,7 +38,7 @@ public class HomeActivity extends AppCompatActivity {
         handleAddTimeButton();
         handleFedNowButton();
 
-        // TODO: 19/04/2023 Update times in arduino
+        timeRepository.findAll().forEach(bluetoothService::sendTime);
     }
 
     @Override
@@ -68,11 +64,7 @@ public class HomeActivity extends AppCompatActivity {
     private void handleFedNowButton() {
         Button buttonFedNow = findViewById(R.id.fed_now_button);
 
-        buttonFedNow.setOnClickListener(view -> {
-            Date now = new Date();
-            SimpleDateFormat formatter = new SimpleDateFormat("HH:mm", Locale.US);
-            bluetoothService.sendTime(formatter.format(now));
-        });
+        buttonFedNow.setOnClickListener(view -> bluetoothService.sendFedNow());
     }
 
     private void showAddTimeDialog() {

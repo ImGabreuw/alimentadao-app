@@ -1,6 +1,6 @@
 package br.com.alimentadao.app.bluetooth;
 
-import static android.widget.Toast.LENGTH_SHORT;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -10,31 +10,31 @@ import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import br.com.alimentadao.app.HomeActivity;
+import br.com.alimentadao.app.time.TimeItem;
+
+@SuppressLint("MissingPermission")
 public class BluetoothService {
 
     public static final int REQUEST_ENABLE_BT = 1;
 
-    private static final UUID ALIMENTADAO_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
+    private static final String DEFAULT_SPP__UUID = "00001101-0000-1000-8000-00805F9B34FB";
 
 
     private final AppCompatActivity context;
     private final BluetoothAdapter bluetoothAdapter;
 
-    private InputStream response;
     private OutputStream request;
 
     public BluetoothService(AppCompatActivity context) {
@@ -46,43 +46,36 @@ public class BluetoothService {
         }
     }
 
-    @SuppressLint("MissingPermission")
     public List<BluetoothDevice> findPairedDevices() {
-        List<BluetoothDevice> devices = new ArrayList<>(bluetoothAdapter.getBondedDevices());
-        Log.i("BluetoothService", "findPairedDevices: " + devices);
-        return devices;
+        return new ArrayList<>(bluetoothAdapter.getBondedDevices());
     }
 
-    @SuppressLint("MissingPermission")
     public BluetoothDevice findByName(String name) {
-        BluetoothDevice bluetoothDevice = findPairedDevices()
+        return findPairedDevices()
                 .stream()
                 .filter(device -> device.getName().equalsIgnoreCase(name))
                 .findFirst()
                 .orElse(null);
-        Log.i("BluetoothService", "findByName: " + bluetoothDevice);
-        return bluetoothDevice;
     }
 
-    @SuppressLint("MissingPermission")
-    public void connectToDevice(BluetoothDevice device) {
+    public boolean connectToDevice(BluetoothDevice device) {
         try {
-            BluetoothSocket socket = device.createRfcommSocketToServiceRecord(ALIMENTADAO_UUID);
-            socket.connect();
-            Log.i("bluetooth connection", "Conexão estabelecida com sucesso");
+            BluetoothSocket socket = device.createRfcommSocketToServiceRecord(UUID.fromString(DEFAULT_SPP__UUID));
 
-            response = socket.getInputStream();
+            if (!socket.isConnected()) return false;
+
+            socket.connect();
             request = socket.getOutputStream();
 
-            // context.startActivity(new Intent(context, HomeActivity.class));
+            Log.i("Bluetooth connection", "connection established.");
+
+            context.startActivity(new Intent(context, HomeActivity.class));
+            return true;
         } catch (IOException e) {
-            Toast.makeText(
-                    context,
-                    "Não foi possível estabeler uma conexão com o dispositivo '" + device.getName() + "'.",
-                    LENGTH_SHORT
-            ).show();
-            Log.e("bluetooth connection", e.getMessage());
+            Log.e("bluetooth connection", "error when connection device '" + device.getName() + "'.", e);
         }
+
+        return false;
     }
 
     public void requestBluetoothPermission() {
@@ -91,7 +84,7 @@ public class BluetoothService {
                 new String[]{Manifest.permission.BLUETOOTH},
                 REQUEST_ENABLE_BT
         );
-        Log.i("BluetoothService", "requestBluetoothPermission: ");
+        Log.i("bluetooth connection", "request bluetooth permission.");
     }
 
     public void requestToEnableBluetooth() {
@@ -106,7 +99,7 @@ public class BluetoothService {
                 new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE),
                 REQUEST_ENABLE_BT
         );
-        Log.i("BluetoothService", "requestToEnableBluetooth: ");
+        Log.i("bluetooth connection", "request to enable bluetooth.");
     }
 
     public void disableBluetooth() {
@@ -118,41 +111,28 @@ public class BluetoothService {
         if (!isEnabled()) return;
 
         bluetoothAdapter.disable();
-        Log.i("BluetoothService", "disableBluetooth: ");
     }
 
     public boolean isEnabled() {
-        boolean enabled = bluetoothAdapter.isEnabled();
-        Log.i("BluetoothService", "isEnabled: " + enabled);
-        return enabled;
+        return bluetoothAdapter.isEnabled();
     }
 
-    public void sendTime(String time) {
+    public void sendTime(TimeItem time) {
         try {
-            request.write(time.getBytes(StandardCharsets.UTF_8));
+            if (request == null) return;
+
+            request.write(time.getFormattedTime().getBytes(UTF_8));
         } catch (IOException e) {
-            Log.e("Send content", "sendTimes: ", e);
-            Toast.makeText(
-                    context,
-                    "Alimentador indisponível",
-                    LENGTH_SHORT
-            ).show();
+            Log.e("Socket", "error when sending time (" + time.getFormattedTime() + ").", e);
         }
     }
 
-    public String fetchTime() {
+    public void sendFedNow() {
         try {
-            return String.valueOf(response.read());
+            request.write("a".getBytes(UTF_8));
         } catch (IOException e) {
-            Log.e("Fetch content", "sendTimes: ", e);
-            Toast.makeText(
-                    context,
-                    "Alimentador indisponível",
-                    LENGTH_SHORT
-            ).show();
+            Log.e("Socket", "error when sending action to fed now.", e);
         }
-
-        return null;
     }
 
     public BluetoothAdapter getBluetoothAdapter() {
