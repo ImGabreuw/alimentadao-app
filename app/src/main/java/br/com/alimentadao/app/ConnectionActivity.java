@@ -25,7 +25,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import br.com.alimentadao.app.bluetooth.BluetoothService;
-import br.com.alimentadao.app.bluetooth.BluetoothThread;
 import br.com.alimentadao.app.device.DeviceAdapter;
 import br.com.alimentadao.app.device.DeviceItem;
 
@@ -85,7 +84,7 @@ public class ConnectionActivity extends AppCompatActivity {
 
         if (requestCode == REQUEST_ENABLE_BT) {
             Switch switchBluetooth = findViewById(R.id.switch_bluetooth);
-            switchBluetooth.setChecked(bluetoothService.getBluetoothAdapter().isEnabled());
+            switchBluetooth.setChecked(bluetoothService.isEnabled());
 
             if (resultCode == RESULT_OK) return;
 
@@ -107,8 +106,8 @@ public class ConnectionActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (BluetoothThread.connectedThread != null){
-            BluetoothThread.connectedThread.cancel();
+        if (!bluetoothService.isConnected()){
+            bluetoothService.stopConnection();
         }
     }
 
@@ -157,7 +156,7 @@ public class ConnectionActivity extends AppCompatActivity {
                 return;
             }
 
-            boolean isConnected = bluetoothService.connectToDevice(bluetoothDevice);
+            boolean isConnected = bluetoothService.connect(bluetoothDevice);
 
             if (isConnected) {
                 this.startActivity(new Intent(this, HomeActivity.class));

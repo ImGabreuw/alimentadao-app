@@ -7,12 +7,15 @@ import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import br.com.alimentadao.app.time.TimeItem;
@@ -22,41 +25,36 @@ public class BluetoothService {
 
     public static final int REQUEST_ENABLE_BT = 1;
 
+    private static final String TAG = "Bluetooth Service";
+
     private final AppCompatActivity context;
     private final BluetoothAdapter bluetoothAdapter;
+
+    private BluetoothConnectionThread connectionThread;
 
 
     public BluetoothService(AppCompatActivity context) {
         this.context = context;
-        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
         if (ContextCompat.checkSelfPermission(context, Manifest.permission.BLUETOOTH) != PackageManager.PERMISSION_GRANTED) {
             requestBluetoothPermission();
         }
-    }
 
-    public List<BluetoothDevice> findPairedDevices() {
-        return new ArrayList<>(bluetoothAdapter.getBondedDevices());
-    }
+        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
-    public BluetoothDevice findByName(String name) {
-        return findPairedDevices()
-                .stream()
-                .filter(device -> device.getName().equalsIgnoreCase(name))
-                .findFirst()
-                .orElse(null);
-    }
+        if (bluetoothAdapter == null) {
+            Toast.makeText(
+                    context,
+                    "Não suporte para conexão bluetooth",
+                    Toast.LENGTH_SHORT
+            ).show();
+            return;
+        }
 
-    public boolean connectToDevice(BluetoothDevice device) {
-        BluetoothThread.CreateConnectThread bluetoothThread = new BluetoothThread.CreateConnectThread(
-                bluetoothAdapter,
-                device.getAddress()
-        );
-        bluetoothThread.start();
-
-        if (BluetoothThread.mmSocket == null) return false;
-
-        return BluetoothThread.mmSocket.isConnected();
+        if (!bluetoothAdapter.isEnabled()) {
+//            requestToEnableBluetooth();
+            bluetoothAdapter.enable();
+        }
     }
 
     public void requestBluetoothPermission() {
@@ -65,7 +63,7 @@ public class BluetoothService {
                 new String[]{Manifest.permission.BLUETOOTH},
                 REQUEST_ENABLE_BT
         );
-        Log.i("bluetooth connection", "request bluetooth permission.");
+        Log.i(TAG, "request bluetooth permission.");
     }
 
     public void requestToEnableBluetooth() {
@@ -89,7 +87,7 @@ public class BluetoothService {
             return;
         }
 
-        if (!isEnabled()) return;
+        if (!bluetoothAdapter.isEnabled()) return;
 
         bluetoothAdapter.disable();
     }
@@ -98,19 +96,82 @@ public class BluetoothService {
         return bluetoothAdapter.isEnabled();
     }
 
-    public void sendTime(TimeItem time) {
-        if (BluetoothThread.mmSocket == null || BluetoothThread.mmSocket.isConnected()) return;
+    public List<BluetoothDevice> findPairedDevices() {
+        return new ArrayList<>(bluetoothAdapter.getBondedDevices());
+    }
 
-        BluetoothThread.connectedThread.write(time.getFormattedTime());
+    public BluetoothDevice findByName(String name) {
+        BluetoothDevice bluetoothDevice = findPairedDevices()
+                .stream()
+                .filter(device -> device.getName().equalsIgnoreCase(name))
+                .findFirst()
+                .orElse(null);
+
+        if (bluetoothDevice == null) {
+            Log.i(
+                    "Connection Bluetooth",
+                    String.format(
+                            "Not found device with the name '%s'",
+                            name
+                    )
+            );
+        } else {
+            Log.i(
+                    "Connection Bluetooth",
+                    String.format(
+                            "Find device with the name '%s' and adress '%s' (%s)",
+                            bluetoothDevice.getName(),
+                            bluetoothDevice.getAddress(),
+                            Arrays.toString(bluetoothDevice.getUuids())
+                    )
+            );
+        }
+
+        return bluetoothDevice;
+    }
+
+    public boolean connect(BluetoothDevice device) {
+        connectionThread = new BluetoothConnectionThread(device);
+
+        connectionThread.start();
+
+        return connectionThread.isConnected();
+    }
+
+    public boolean isConnected() {
+        return connectionThread.isConnected();
+    }
+
+    public void stopConnection() {
+        connectionThread.cancel();
+    }
+
+    public void sendTime(TimeItem time) {
+        if (!isConnected()) return;
+
+        try {
+            connectionThread
+                    .getSocket()
+                    .getOutputStream()
+                    .write(time.getFormattedTime().getBytes());
+        } catch (IOException e) {
+            Log.e(TAG, "Error while sending time to arduino.", e);
+        }
     }
 
     public void sendFedNow() {
-        if (BluetoothThread.mmSocket == null || BluetoothThread.mmSocket.isConnected()) return;
+        if (!isConnected()) return;
 
-        BluetoothThread.connectedThread.write("a");
+        try {
+            connectionThread
+                    .getSocket()
+                    .getOutputStream()
+                    .write("a".getBytes());
+        } catch (IOException e) {
+            Log.e(TAG, "Error while sending time to arduino.", e);
+        }
     }
 
-    public BluetoothAdapter getBluetoothAdapter() {
-        return bluetoothAdapter;
-    }
+
+
 }
