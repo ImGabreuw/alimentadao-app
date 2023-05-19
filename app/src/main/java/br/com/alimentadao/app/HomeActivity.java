@@ -10,14 +10,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.timepicker.MaterialTimePicker;
 import com.google.android.material.timepicker.TimeFormat;
 
-import br.com.alimentadao.app.bluetooth.BluetoothService;
+import br.com.alimentadao.app.bluetooth.ArduinoBluetoothConnection;
 import br.com.alimentadao.app.database.TimeSQLiteRepository;
 import br.com.alimentadao.app.time.TimeAdapter;
 import br.com.alimentadao.app.time.TimeItem;
 
 public class HomeActivity extends AppCompatActivity {
 
-    private final BluetoothService bluetoothService = ConnectionActivity.getInstance().getBluetoothService();
+    private final ArduinoBluetoothConnection bluetoothConnection = ConnectionActivity.getInstance().getBluetoothConnection();
 
     private TimeSQLiteRepository timeRepository;
     private TimeAdapter timeAdapter;
@@ -38,7 +38,11 @@ public class HomeActivity extends AppCompatActivity {
         handleAddTimeButton();
         handleFedNowButton();
 
-        timeRepository.findAll().forEach(bluetoothService::sendTime);
+        timeRepository
+                .findAll()
+                .stream()
+                .map(TimeItem::getFormattedTime)
+                .forEach(bluetoothConnection::sendData);
     }
 
     @Override
@@ -64,7 +68,7 @@ public class HomeActivity extends AppCompatActivity {
     private void handleFedNowButton() {
         Button buttonFedNow = findViewById(R.id.fed_now_button);
 
-        buttonFedNow.setOnClickListener(view -> bluetoothService.sendFedNow());
+        buttonFedNow.setOnClickListener(view -> bluetoothConnection.sendData("a"));
     }
 
     private void showAddTimeDialog() {

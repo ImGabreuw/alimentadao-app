@@ -3,11 +3,13 @@ package br.com.alimentadao.app;
 import static android.Manifest.permission.BLUETOOTH;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 import static android.widget.Toast.LENGTH_SHORT;
-import static br.com.alimentadao.app.bluetooth.BluetoothService.REQUEST_ENABLE_BT;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
+import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -20,22 +22,33 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import br.com.alimentadao.app.bluetooth.BluetoothService;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import br.com.alimentadao.app.bluetooth.ArduinoBluetoothConnection;
 import br.com.alimentadao.app.device.DeviceAdapter;
 import br.com.alimentadao.app.device.DeviceItem;
 
-public class ConnectionActivity extends AppCompatActivity {
+public class ConnectionActivity extends AppCompatActivity implements ArduinoBluetoothConnection.BluetoothConnectionListener {
+
+    public static final int REQUEST_ENABLE_BT = 1;
+    private static final String TAG = "Bluetooth Service";
 
     private static ConnectionActivity instance;
 
     private final Handler handler = new Handler();
 
     private DeviceAdapter deviceAdapter;
-    private BluetoothService bluetoothService;
+
+    private BluetoothAdapter bluetoothAdapter;
+
+    private ArduinoBluetoothConnection bluetoothConnection;
     private Runnable task;
 
     @Override
@@ -48,7 +61,21 @@ public class ConnectionActivity extends AppCompatActivity {
         RecyclerView recyclerViewDevices = findViewById(R.id.devices);
         recyclerViewDevices.setLayoutManager(new LinearLayoutManager(this));
 
-        bluetoothService = new BluetoothService(this);
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH) != PackageManager.PERMISSION_GRANTED) {
+            requestBluetoothPermission();
+        }
+
+        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+
+        if (bluetoothAdapter == null) {
+            Toast.makeText(
+                    this,
+                    "Não suporte para conexão bluetooth",
+                    Toast.LENGTH_SHORT
+            ).show();
+            return;
+        }
+
         deviceAdapter = new DeviceAdapter();
         recyclerViewDevices.setAdapter(deviceAdapter);
 
@@ -56,12 +83,11 @@ public class ConnectionActivity extends AppCompatActivity {
         handler.postDelayed(task = () -> {
             try {
                 if (ContextCompat.checkSelfPermission(this, BLUETOOTH) != PERMISSION_GRANTED
-                        || !bluetoothService.isEnabled()) {
+                        || !bluetoothAdapter.isEnabled()) {
                     return;
                 }
 
-                bluetoothService
-                        .findPairedDevices()
+                findPairedDevices()
                         .stream()
                         .map(DeviceItem::of)
                         .forEach(deviceAdapter::addDevice);
@@ -84,11 +110,11 @@ public class ConnectionActivity extends AppCompatActivity {
 
         if (requestCode == REQUEST_ENABLE_BT) {
             Switch switchBluetooth = findViewById(R.id.switch_bluetooth);
-            switchBluetooth.setChecked(bluetoothService.isEnabled());
+            switchBluetooth.setChecked(bluetoothAdapter.isEnabled());
 
             if (resultCode == RESULT_OK) return;
 
-            bluetoothService.requestBluetoothPermission();
+            requestBluetoothPermission();
         }
     }
 
@@ -106,20 +132,96 @@ public class ConnectionActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (!bluetoothService.isConnected()){
-            bluetoothService.stopConnection();
+        if (bluetoothConnection != null && bluetoothConnection.isConnected()) {
+            bluetoothConnection.disconnect();
         }
     }
 
+    @Override
+    public void onConnected(String deviceName) {
+        String message = "Conexão estabelecida com '" + deviceName + "'";
+        Log.d(TAG, message);
+    }
+
+    @Override
+    public void onConnectionFailed(String deviceName, String message) {
+        Log.d(TAG, "Não foi possível estebelecer uma conexão com '" + deviceName + "': " + message);
+    }
+
+    @Override
+    public void onDataReceived(String deviceName, String data) {
+        Log.d(TAG, "Recebendo dados do dispositivo '" + deviceName + "': " + data);
+    }
+
+    @Override
+    public void onConnectionLost(String deviceName) {
+        Log.d(TAG, "Conexão perdida com '" + deviceName + "'");
+    }
+
+    public void requestBluetoothPermission() {
+        ActivityCompat.requestPermissions(
+                this,
+                new String[]{Manifest.permission.BLUETOOTH},
+                REQUEST_ENABLE_BT
+        );
+        Log.i("Bluetooth", "request bluetooth permission.");
+    }
+
+    @SuppressLint("MissingPermission")
+    public void requestToEnableBluetooth() {
+        startActivityForResult(
+                new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE),
+                REQUEST_ENABLE_BT
+        );
+        Log.i("Bluetooth", "request to enable bluetooth.");
+    }
+
+    @SuppressLint("MissingPermission")
+    public List<BluetoothDevice> findPairedDevices() {
+        return new ArrayList<>(bluetoothAdapter.getBondedDevices());
+    }
+
+    @SuppressLint("MissingPermission")
+    public BluetoothDevice findByName(String name) {
+        BluetoothDevice bluetoothDevice = findPairedDevices()
+                .stream()
+                .filter(device -> device.getName().equalsIgnoreCase(name))
+                .findFirst()
+                .orElse(null);
+
+        if (bluetoothDevice == null) {
+            Log.i(
+                    "Connection Bluetooth",
+                    String.format(
+                            "Not found device with the name '%s'",
+                            name
+                    )
+            );
+        } else {
+            Log.i(
+                    "Connection Bluetooth",
+                    String.format(
+                            "Find device with the name '%s' and adress '%s' (%s)",
+                            bluetoothDevice.getName(),
+                            bluetoothDevice.getAddress(),
+                            Arrays.toString(bluetoothDevice.getUuids())
+                    )
+            );
+        }
+
+        return bluetoothDevice;
+    }
+
+    @SuppressLint("MissingPermission")
     private void handleBluetoothSwitch() {
         Switch switchBluetooth = findViewById(R.id.switch_bluetooth);
 
-        switchBluetooth.setChecked(bluetoothService.isEnabled());
+        switchBluetooth.setChecked(bluetoothAdapter.isEnabled());
         switchBluetooth.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
-                bluetoothService.requestToEnableBluetooth();
+                requestToEnableBluetooth();
             } else {
-                bluetoothService.disableBluetooth();
+                bluetoothAdapter.disable();
             }
 
             showLoadingProgressBar(!isChecked);
@@ -142,7 +244,7 @@ public class ConnectionActivity extends AppCompatActivity {
                 return;
             }
 
-            BluetoothDevice bluetoothDevice = bluetoothService.findByName(selectedDevice.getName());
+            BluetoothDevice bluetoothDevice = findByName(selectedDevice.getName());
 
             if (bluetoothDevice == null) {
                 Toast.makeText(
@@ -156,9 +258,11 @@ public class ConnectionActivity extends AppCompatActivity {
                 return;
             }
 
-            boolean isConnected = bluetoothService.connect(bluetoothDevice);
+            bluetoothConnection = new ArduinoBluetoothConnection(bluetoothAdapter, bluetoothDevice);
+            bluetoothConnection.setConnectionListener(this);
+            bluetoothConnection.connect();
 
-            if (isConnected) {
+            if (bluetoothConnection.isConnected()) {
                 this.startActivity(new Intent(this, HomeActivity.class));
                 return;
             }
@@ -183,7 +287,7 @@ public class ConnectionActivity extends AppCompatActivity {
         return instance;
     }
 
-    public BluetoothService getBluetoothService() {
-        return bluetoothService;
+    public ArduinoBluetoothConnection getBluetoothConnection() {
+        return bluetoothConnection;
     }
 }
