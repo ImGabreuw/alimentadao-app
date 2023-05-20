@@ -262,16 +262,15 @@ public class ConnectionActivity extends AppCompatActivity implements ArduinoBlue
             bluetoothConnection.setConnectionListener(this);
             bluetoothConnection.connect();
 
-            if (bluetoothConnection.isConnected()) {
-                this.startActivity(new Intent(this, HomeActivity.class));
-                return;
+            if (!bluetoothConnection.isConnected()) {
+                Toast.makeText(
+                        this,
+                        "Não foi possível estabeler uma conexão com o dispositivo '" + bluetoothDevice.getName() + "'.",
+                        LENGTH_SHORT
+                ).show();
             }
 
-            Toast.makeText(
-                    this,
-                    "Não foi possível estabeler uma conexão com o dispositivo '" + bluetoothDevice.getName() + "'.",
-                    LENGTH_SHORT
-            ).show();
+            this.startActivity(new Intent(this, HomeActivity.class));
         });
     }
 

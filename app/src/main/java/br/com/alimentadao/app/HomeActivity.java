@@ -38,11 +38,14 @@ public class HomeActivity extends AppCompatActivity {
         handleAddTimeButton();
         handleFedNowButton();
 
-        timeRepository
-                .findAll()
-                .stream()
-                .map(TimeItem::getFormattedTime)
-                .forEach(bluetoothConnection::sendData);
+        if (bluetoothConnection.isConnected()) {
+            timeRepository
+                    .findAll()
+                    .stream()
+                    .map(TimeItem::getFormattedTime)
+                    .forEach(bluetoothConnection::sendData);
+        }
+
     }
 
     @Override
